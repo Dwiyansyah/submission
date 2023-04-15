@@ -87,6 +87,29 @@ const editBookByIdHandler = (request, h) => {
     const {name, year, author, summary, publisher, pageCount, readPage, reading} = request.payload;
     const updatedAt = new Date().toISOString();
 
+    if(name === undefined) {
+        const response = h.response({
+            status: 'fail',
+            message: 'Gagal memperbarui buku. Mohon isi nama buku'
+        });
+        response.code(400);
+        return response;
+    } else if(readPage > pageCount) {
+        const response = h.response({
+            status: 'fail',
+            message: 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
+        });
+        response.code(400);
+        return response;
+    } else if(id === undefined) {
+        const response = h.response({
+            status: 'fail',
+            message: 'Gagal memperbarui buku. Id tidak ditemukan',
+        });
+        response.code(404);
+        return response;
+    }
+
     const index = books.findIndex((book) => book.id === id);
 
     if(index !== -1) {
@@ -100,6 +123,7 @@ const editBookByIdHandler = (request, h) => {
             pageCount,
             readPage,
             readPage,
+            reading,
             updatedAt,
         };
 
@@ -111,32 +135,6 @@ const editBookByIdHandler = (request, h) => {
         return response;
     }
 
-    if(name === undefined) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Gagal memperbarui buku. Mohon isi nama buku'
-        });
-        response.code(400);
-        return response;
-    }
-
-    if(readPage > pageCount) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
-        });
-        response.code(400);
-        return response;
-    }
-
-    if(id === undefined) {
-        const response = h.response({
-            status: 'fail',
-            message: 'Gagal memperbarui buku. Id tidak ditemukan',
-        });
-        response.code(404);
-        return response;
-    }
 };
 
 const deleteBookByIdHandler = (request, h) => {
